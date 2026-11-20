@@ -25,6 +25,7 @@ func init() {
 func main() {
 	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: slog.LevelInfo})))
 	if err := newRoot().Execute(); err != nil {
+		pauseOnError() // a double-clicked window on Windows would close before the error could be read
 		os.Exit(1)
 	}
 }
