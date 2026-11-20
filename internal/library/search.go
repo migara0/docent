@@ -286,6 +286,7 @@ func (s *Source) snippet(rel string, term []byte) string {
 	if err != nil {
 		return ""
 	}
+	src = bytes.ReplaceAll(src, []byte("\r\n"), []byte("\n"))                 // Windows line endings: the front matter below is found by "\n---\n"
 	if body := bytes.TrimPrefix(src, []byte("---\n")); len(body) < len(src) { // skip front matter
 		if i := bytes.Index(body, []byte("\n---\n")); i >= 0 {
 			src = body[i+5:]

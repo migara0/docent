@@ -2,7 +2,6 @@ package devnotes
 
 import (
 	"fmt"
-	"os"
 	"path/filepath"
 	"regexp"
 	"sort"
@@ -174,7 +173,7 @@ func LintLibrary(s Settings, src *library.Source) []Finding {
 		if pg.Meta.Date == "" || Locate(pg.Path).Type == "commits" { // only notes: index pages and plain Markdown are not linted
 			continue
 		}
-		data, err := os.ReadFile(filepath.Join(s.Root, filepath.FromSlash(pg.Path)))
+		data, err := ReadNote(filepath.Join(s.Root, filepath.FromSlash(pg.Path)))
 		if err != nil {
 			continue
 		}

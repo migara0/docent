@@ -153,6 +153,8 @@ export interface FsListing {
   home: string;
   crumbs: { name: string; path: string }[];
   entries: FsEntry[];
+  sep?: string; // the machine's path separator: "/" or "\"
+  roots?: string[]; // Windows: the drives ("C:\", "D:\")
 }
 
 export interface ServerEvent {

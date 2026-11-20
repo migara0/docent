@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -240,7 +241,7 @@ func TestFolderPicker(t *testing.T) {
 	if code, _ = e.do(t, "GET", "/_api/fs?dir=relative/path", "", nil); code != 400 {
 		t.Errorf("a relative dir must be refused, got %d", code)
 	}
-	if code, _ = e.do(t, "GET", "/_api/fs?dir=/definitely/not/here", "", nil); code != 404 {
+	if code, _ = e.do(t, "GET", "/_api/fs?dir="+url.QueryEscape(filepath.Join(t.TempDir(), "not-here")), "", nil); code != 404 { // absolute on every system
 		t.Errorf("a missing dir must 404, got %d", code)
 	}
 	hidden := t.TempDir()
@@ -363,7 +364,7 @@ func TestRawAndFilePath(t *testing.T) {
 	_, body = e.do(t, "GET", "/_api/page?src=basic&path=guide/getting-started.md", "", nil)
 	var pv library.PageView
 	_ = json.Unmarshal(body, &pv)
-	if !strings.HasSuffix(pv.File, "guide/getting-started.md") || !filepath.IsAbs(pv.File) {
+	if !strings.HasSuffix(pv.File, filepath.FromSlash("guide/getting-started.md")) || !filepath.IsAbs(pv.File) {
 		t.Errorf("a loopback page carries its absolute path: %q", pv.File)
 	}
 	lan := newEnv(t, true)

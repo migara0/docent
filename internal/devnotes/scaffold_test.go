@@ -14,7 +14,10 @@ func newScaffold(t *testing.T) (Scaffold, string) {
 	docs := filepath.Join(ws, "doc_developer_notes", "docs")
 	_ = os.MkdirAll(docs, 0o755)
 	_ = os.MkdirAll(filepath.Join(ws, "billing-api"), 0o755)
-	_ = exec.Command("git", "-C", filepath.Join(ws, "billing-api"), "init", "-q").Run()
+	// a service is a folder with a .git inside: without git installed, make that folder by hand
+	if exec.Command("git", "-C", filepath.Join(ws, "billing-api"), "init", "-q").Run() != nil {
+		_ = os.MkdirAll(filepath.Join(ws, "billing-api", ".git"), 0o755)
+	}
 	s := Settings{Prefix: "DOC", Workspace: ws, Root: docs}
 	var ids []string
 	sc := Scaffold{S: s, Registry: Registry{Dir: filepath.Join(ws, "reg"), Library: "doc", Prefix: "DOC"}, IDs: func() []string { return ids }}

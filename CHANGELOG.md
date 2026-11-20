@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.10.0-beta.2 (2026-11-20)
+
+- **Windows**: `docent.exe` for Windows (amd64 and arm64), as a zip. Double-click it to open Docent in your browser. The program is not
+  signed yet, so SmartScreen asks once ("More info", then "Run anyway").
+- Notes saved with Windows line endings (`\r\n`) work everywhere, and the commands that update a note (plan board, commit log, ID backfill)
+  keep the note's line endings.
+- PDF export and diagram checks find Chrome where Windows and macOS install it, and use Microsoft Edge when Chrome is missing.
+- The folder picker shows the drives on Windows; "open in your editor" links work with Windows paths.
+- Checks on every change: tests on Linux and Windows run on GitHub for each push and pull request.
+
 ## 0.10.0-beta.1 (2026-11-20)
 
 The first public release, for testing. Linux (amd64 and arm64) only.

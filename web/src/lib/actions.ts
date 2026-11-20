@@ -56,12 +56,7 @@ export async function downloadMarkdown(page: PageData) {
   }
 }
 
-export function editorUrl(file: string | undefined, editor: string): string | undefined {
-  if (!file) return undefined;
-  if (editor === 'vscode') return `vscode://file${file}`;
-  if (editor === 'zed') return `zed://file${file}`;
-  return undefined;
-}
+export { editorUrl } from './editor';
 
 /** The built-in guide. */
 export const HELP_URL = '/help/guide';

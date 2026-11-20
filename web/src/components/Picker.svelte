@@ -9,6 +9,7 @@
   import { api } from '../lib/api';
   import { ui } from '../lib/ui.svelte';
   import { openPath } from '../lib/actions';
+  import { baseName, parentOf } from '../lib/paths';
   import type { FsEntry, FsListing } from '../lib/types';
 
   let dialog: HTMLDialogElement | undefined = $state();
@@ -60,8 +61,7 @@
     if (!p) return;
     // a file path selects that file inside its folder
     if (/\.(md|markdown)$/i.test(p)) {
-      const dir = p.slice(0, p.lastIndexOf('/')) || '/';
-      await load(dir, p, true);
+      await load(parentOf(p), p, true);
     } else await load(p, undefined, true);
   }
 
@@ -81,7 +81,7 @@
   async function finish(add: boolean) {
     const path = target;
     ui.pickerOpen = false;
-    await openPath(path, add ? { name: name.trim() || (path.split('/').pop() ?? 'Library'), profile } : undefined);
+    await openPath(path, add ? { name: name.trim() || baseName(path) || 'Library', profile } : undefined);
   }
 </script>
 
@@ -99,9 +99,17 @@
       </form>
 
       {#if listing}
+        {#if listing.roots?.length}
+          <!-- Windows: one button per drive -->
+          <div class="picker__path" role="group" aria-label="Drives">
+            {#each listing.roots as r (r)}
+              <button type="button" aria-pressed={listing.dir.toUpperCase().startsWith(r.toUpperCase())} onclick={() => load(r, undefined, true)}>{r.replace(/\\$/, '')}</button>
+            {/each}
+          </div>
+        {/if}
         <div class="picker__path">
           {#each listing.crumbs as c, i (c.path)}
-            {#if i > 0}<span style="color: var(--text-faint)">/</span>{/if}
+            {#if i > 0}<span style="color: var(--text-faint)">{listing.sep ?? '/'}</span>{/if}
             <button type="button" onclick={() => load(c.path, undefined, true)}>{#if c.path === listing.home}<House class="icon icon--sm" />{:else}{c.name || '/'}{/if}</button>
           {/each}
         </div>

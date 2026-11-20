@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -97,13 +98,46 @@ func newBundle() *cobra.Command {
 	return c
 }
 
+// findChrome finds a Chromium-based browser for headless printing and drawing: Chrome or Chromium on the PATH, else where Windows
+// and macOS install them. Microsoft Edge comes with Windows and prints the same way, so it is the last resort there.
 func findChrome() (string, error) {
-	for _, n := range []string{"google-chrome", "chromium", "chromium-browser", "chrome"} {
+	for _, n := range []string{"google-chrome", "google-chrome-stable", "chromium", "chromium-browser", "chrome"} {
 		if p, err := exec.LookPath(n); err == nil {
 			return p, nil
 		}
 	}
-	return "", fmt.Errorf("google-chrome or chromium not found")
+	for _, p := range chromePaths(runtime.GOOS, os.Getenv) {
+		if st, err := os.Stat(p); err == nil && !st.IsDir() {
+			return p, nil
+		}
+	}
+	return "", fmt.Errorf("no Chrome, Chromium or Edge found (install Google Chrome, or put it on the PATH)")
+}
+
+// chromePaths lists the usual install locations of Chrome, Chromium and Edge on goos, most preferred first.
+func chromePaths(goos string, env func(string) string) []string {
+	switch goos {
+	case "windows":
+		var out []string
+		for _, base := range []string{env("ProgramFiles"), env("ProgramFiles(x86)"), env("LocalAppData")} {
+			if base != "" {
+				out = append(out, filepath.Join(base, "Google", "Chrome", "Application", "chrome.exe"))
+			}
+		}
+		for _, base := range []string{env("ProgramFiles(x86)"), env("ProgramFiles")} {
+			if base != "" {
+				out = append(out, filepath.Join(base, "Microsoft", "Edge", "Application", "msedge.exe"))
+			}
+		}
+		return out
+	case "darwin":
+		return []string{
+			"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+			"/Applications/Chromium.app/Contents/MacOS/Chromium",
+			"/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+		}
+	}
+	return nil
 }
 
 func printPDF(chrome, profile, url, target string) error {

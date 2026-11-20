@@ -8,7 +8,6 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"syscall"
 )
 
 // A note ID is the library's prefix and a four-digit number: DOC-0007. It never changes when a note is renamed, and a number is never reused.
@@ -70,10 +69,11 @@ func (r Registry) Next(existing []string) (string, error) {
 		return "", err
 	}
 	defer lock.Close()
-	if err := syscall.Flock(int(lock.Fd()), syscall.LOCK_EX); err != nil {
+	unlock, err := lockFile(lock) // flock on Unix, LockFileEx on Windows (lock_*.go)
+	if err != nil {
 		return "", err
 	}
-	defer syscall.Flock(int(lock.Fd()), syscall.LOCK_UN)
+	defer unlock()
 
 	path := filepath.Join(r.Dir, r.Library+".json")
 	var f registryFile

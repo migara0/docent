@@ -119,7 +119,7 @@ func CheckModule(s Settings, rel string, pg *library.Page) StaleModule {
 	if r.Since == "" {
 		r.Since = pg.Meta.Date
 	}
-	data, err := os.ReadFile(filepath.Join(s.Root, filepath.FromSlash(rel)))
+	data, err := ReadNote(filepath.Join(s.Root, filepath.FromSlash(rel)))
 	if err != nil {
 		return r
 	}
