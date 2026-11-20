@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Docent
+GenericName=Markdown reader
+Comment=Read folders of Markdown as a searchable documentation site
+Exec=docent serve
+Icon=docent
+Terminal=false
+Categories=Office;Viewer;Documentation;
+Keywords=markdown;docs;notes;reader;
+StartupNotify=false

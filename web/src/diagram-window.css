@@ -1,0 +1,19 @@
+:root { --bg: #fff; --fg: #222; --line: #bbb; --accent: #5b4fe0; color-scheme: light dark; }
+html, body { margin: 0; height: 100%; }
+body { display: grid; grid-template-rows: auto 1fr; background: var(--bg); color: var(--fg); font: 14px/1.3 system-ui, sans-serif; }
+#bar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 6px 10px; border-bottom: 1px solid var(--line); }
+#bar button { min-width: 30px; height: 28px; padding: 0 10px; font: inherit; cursor: pointer; color: inherit; background: none; border: 1px solid var(--line); border-radius: 6px; }
+#bar button:hover { border-color: var(--accent); }
+#bar .sep { flex: 1; }
+#zoom { min-width: 3.2em; text-align: center; opacity: 0.8; }
+#search { width: 11em; height: 28px; box-sizing: border-box; padding: 0 8px; font: inherit; color: inherit; background: none; border: 1px solid var(--line); border-radius: 6px; }
+#search:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+#count { opacity: 0.8; min-width: 4.5em; }
+#view { position: relative; overflow: hidden; min-height: 0; cursor: grab; touch-action: none; }
+#view.dragging { cursor: grabbing; }
+#stage { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+#stage svg { display: block; max-width: none !important; }
+svg.searching g.node:not(.hit), svg.searching g.cluster:not(.hit), svg.searching g.edgeLabel:not(.hit), svg.searching g.actor:not(.hit), svg.searching g.label:not(.hit), svg.searching text:not(.hit) { opacity: 0.18; }
+svg.searching g.hit :is(rect, polygon, circle, ellipse, path) { stroke: #f60 !important; stroke-width: 3px !important; vector-effect: non-scaling-stroke; }
+svg.searching g.current :is(rect, polygon, circle, ellipse, path) { stroke: #d00 !important; stroke-width: 5px !important; vector-effect: non-scaling-stroke; }
+svg.searching text.hit { fill: #d60 !important; font-weight: 700; }

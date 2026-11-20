@@ -1,0 +1,2 @@
+go test fuzz v1
+string("---\nstages:\n  - name: :0\n---")

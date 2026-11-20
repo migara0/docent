@@ -1,0 +1,19 @@
+# Optional: keep Docent running in the background so the app opens instantly.
+#   cp packaging/docent.service ~/.config/systemd/user/ && systemctl --user enable --now docent
+# It listens on 127.0.0.1 only and does not open a browser; visit http://127.0.0.1:8787 (or run `docent`, which opens it).
+[Unit]
+Description=Docent Markdown reader
+
+[Service]
+ExecStart=%h/.local/bin/docent serve --no-open
+Restart=on-failure
+# Docent is light; these keep it that way even if something goes wrong.
+MemoryMax=512M
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=%h/.config/docent %h/.cache/docent
+PrivateTmp=yes
+
+[Install]
+WantedBy=default.target

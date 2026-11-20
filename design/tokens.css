@@ -1,0 +1,116 @@
+/* Docent design tokens. The single source of truth for colour, type, space, shape and motion.
+ * Modern CSS only: OKLCH colours, light-dark(), color-mix(). Theme: follows the system, or force it with <html data-theme="light|dark">. */
+
+@font-face {
+  font-family: "Inter Variable";
+  src: url("fonts/inter-latin-wght-normal.woff2") format("woff2-variations");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono Variable";
+  src: url("fonts/jetbrains-mono-latin-wght-normal.woff2") format("woff2-variations");
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: light dark;
+
+  /* ---- type ---- */
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  --text-2xs: 0.6875rem;
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-ui: 0.875rem;      /* controls, navigation */
+  --text-reading: 1.0625rem; /* body of a page, multiplied by --reading-scale */
+  --leading-reading: 1.75;
+
+  /* ---- space (4px grid) ---- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* ---- shape ---- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 999px;
+
+  /* ---- motion ---- */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur-1: 120ms;
+  --dur-2: 200ms;
+  --dur-3: 320ms;
+
+  /* ---- layout ---- */
+  --rail-w: 17rem;
+  --toc-w: 14.5rem;
+  --reading-w: 46rem;       /* user can change: narrow / standard / wide */
+  --reading-scale: 1;       /* user can change: real font-size scaling of the page text */
+  --topbar-h: 3.25rem;
+
+  /* ---- colour: neutrals (cool, slightly blue-tinted) ---- */
+  --bg: light-dark(oklch(0.982 0.003 260), oklch(0.165 0.012 268));
+  --surface: light-dark(oklch(1 0 0), oklch(0.205 0.014 268));
+  --surface-2: light-dark(oklch(0.963 0.005 260), oklch(0.245 0.016 268));
+  --surface-3: light-dark(oklch(0.935 0.007 260), oklch(0.285 0.018 268));
+  --border: light-dark(oklch(0.915 0.006 260), oklch(0.295 0.016 268));
+  --border-strong: light-dark(oklch(0.86 0.01 260), oklch(0.38 0.02 268));
+  --text: light-dark(oklch(0.235 0.02 268), oklch(0.935 0.008 260));
+  --text-muted: light-dark(oklch(0.44 0.02 268), oklch(0.78 0.014 262));
+  /* faint text still has to reach 4.5:1 (WCAG AA) on every surface; the accessibility tests check it */
+  --text-faint: light-dark(oklch(0.52 0.016 268), oklch(0.68 0.016 266));
+
+  /* ---- colour: accent (indigo-violet). Change these three to re-skin the whole app per library ---- */
+  --accent: light-dark(oklch(0.54 0.2 277), oklch(0.74 0.14 277));
+  --accent-strong: light-dark(oklch(0.46 0.2 277), oklch(0.82 0.12 277));
+  --accent-contrast: light-dark(oklch(0.99 0 0), oklch(0.2 0.03 277));
+  --accent-soft: color-mix(in oklab, var(--accent) 12%, transparent);
+  --accent-softer: color-mix(in oklab, var(--accent) 6%, transparent);
+  --focus-ring: color-mix(in oklab, var(--accent) 55%, transparent);
+
+  /* ---- colour: meaning ---- */
+  --c-note: light-dark(oklch(0.55 0.15 245), oklch(0.74 0.12 245));
+  --c-tip: light-dark(oklch(0.58 0.14 160), oklch(0.76 0.13 160));
+  --c-warn: light-dark(oklch(0.66 0.15 75), oklch(0.8 0.14 80));
+  --c-danger: light-dark(oklch(0.56 0.2 25), oklch(0.74 0.15 22));
+  --c-info: var(--accent);
+
+  /* ---- code ---- */
+  --code-bg: light-dark(oklch(0.972 0.004 260), oklch(0.19 0.014 268));
+  --syn-comment: light-dark(oklch(0.5 0.02 268), oklch(0.62 0.02 266));
+  --syn-keyword: light-dark(oklch(0.5 0.2 310), oklch(0.78 0.13 310));
+  --syn-string: light-dark(oklch(0.5 0.13 150), oklch(0.8 0.13 150));
+  --syn-number: light-dark(oklch(0.5 0.16 55), oklch(0.8 0.12 65));
+  --syn-func: light-dark(oklch(0.5 0.17 255), oklch(0.78 0.11 250));
+  --syn-type: light-dark(oklch(0.46 0.14 200), oklch(0.8 0.1 200));
+
+  /* ---- elevation ---- */
+  --shadow-sm: 0 1px 2px light-dark(oklch(0.2 0.02 268 / 0.06), oklch(0 0 0 / 0.3));
+  --shadow-md: 0 4px 16px light-dark(oklch(0.2 0.02 268 / 0.08), oklch(0 0 0 / 0.4)), 0 1px 3px light-dark(oklch(0.2 0.02 268 / 0.06), oklch(0 0 0 / 0.3));
+  --shadow-lg: 0 24px 64px light-dark(oklch(0.2 0.02 268 / 0.18), oklch(0 0 0 / 0.55)), 0 4px 12px light-dark(oklch(0.2 0.02 268 / 0.08), oklch(0 0 0 / 0.35));
+  --scrim: light-dark(oklch(0.2 0.02 268 / 0.32), oklch(0 0 0 / 0.55));
+}
+
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }
+
+/* Reading width presets (the reading controls set data-width on <html>) */
+:root[data-width="narrow"] { --reading-w: 38rem; }
+:root[data-width="wide"] { --reading-w: 58rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-1: 0ms; --dur-2: 0ms; --dur-3: 0ms; }
+}

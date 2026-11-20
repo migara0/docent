@@ -1,0 +1,79 @@
+title: Syntax tour
+<p>Every Markdown feature Docent supports appears once on this page, so a renderer test can check them all.</p>
+<h2 id="text"><a class="anchor" href="#text" aria-hidden="true" tabindex="-1">#</a>Text</h2>
+<p>Plain paragraph with <strong>bold</strong>, <em>italic</em>, <del>strikethrough</del>, <code>inline code</code> and a <a href="getting-started.md">link</a>.</p>
+<blockquote>
+<p>A block quote.</p>
+</blockquote>
+<h2 id="lists"><a class="anchor" href="#lists" aria-hidden="true" tabindex="-1">#</a>Lists</h2>
+<ol>
+<li>First</li>
+<li>Second
+<ul>
+<li>nested item</li>
+<li>another</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> done task</li>
+<li><input disabled="" type="checkbox"> open task</li>
+</ul>
+<dl>
+<dt>Term</dt>
+<dd>The definition of the term.</dd>
+</dl>
+<h2 id="admonitions"><a class="anchor" href="#admonitions" aria-hidden="true" tabindex="-1">#</a>Admonitions</h2>
+<div class="callout callout--note"><svg class="icon"><use href="#i-info"/></svg>
+<p class="callout__title">A note</p>
+<p>Content of the note, indented four spaces.</p>
+</div>
+<div class="callout callout--warn"><svg class="icon"><use href="#i-alert"/></svg>
+<p class="callout__title">Warning</p>
+<p>A warning without a custom title.</p>
+</div>
+<div class="callout callout--tip"><svg class="icon"><use href="#i-bulb"/></svg>
+<p class="callout__title">Tip</p>
+<p>GitHub style alerts are supported too.</p>
+</div>
+<details class="fold callout--note"><summary><svg class="icon icon--sm chev"><use href="#i-chev"/></svg>Collapsed by default</summary>
+<p>Hidden until opened.</p>
+</details>
+<details class="fold callout--note" open=""><summary><svg class="icon icon--sm chev"><use href="#i-chev"/></svg>Open by default</summary>
+<p>Visible at first.</p>
+</details>
+<h2 id="table"><a class="anchor" href="#table" aria-hidden="true" tabindex="-1">#</a>Table</h2>
+<div class="table"><table>
+<thead>
+<tr>
+<th>Route</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET /a</code></td>
+<td>First</td>
+</tr>
+<tr>
+<td><code>POST /b</code></td>
+<td>Second</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="code"><a class="anchor" href="#code" aria-hidden="true" tabindex="-1">#</a>Code</h2>
+<div class="code" data-lang="typescript"><div class="code__bar"><span class="name"></span><span class="lang">typescript</span></div><pre><code><span class="tok-k">export</span> <span class="tok-k">const</span> answer: <span class="tok-t">number</span> = <span class="tok-n">42</span>;</code></pre></div>
+<pre class="mermaid">flowchart LR
+    A[Folder] --&gt; B[Docent] --&gt; C[Browser]</pre>
+<h2 id="custom-id" class="highlight"><a class="anchor" href="#custom-id" aria-hidden="true" tabindex="-1">#</a>Attributes and footnotes</h2>
+<p>A sentence with a footnote.<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></p>
+<h2 id="not-supported-in-v1"><a class="anchor" href="#not-supported-in-v1" aria-hidden="true" tabindex="-1">#</a>Not supported in v1</h2>
+<p><span class="image-omitted" title="Images are not shown">An image</span> is rendered as its alt text only.</p>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p>The footnote text. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">↩︎</a></p>
+</li>
+</ol>
+</div>

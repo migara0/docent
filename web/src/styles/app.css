@@ -1,0 +1,150 @@
+/* Design tokens and components come from ../../design (the approved design). This file adds what only the real app needs. */
+@import '../../../design/tokens.css';
+@import '../../../design/docent.css';
+
+/* the page title and note ID in the top bar, once the title has scrolled away */
+.pagetitle { display: flex; align-items: center; gap: var(--space-2); min-width: 0; flex: 1; animation: pagetitle-in 0.15s ease-out; }
+.pagetitle .chip--id { flex: none; }
+.pagetitle__text { min-width: 0; padding: 0; border: 0; background: none; font: inherit; font-size: var(--text-sm); font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; text-align: left; }
+.pagetitle__text:hover { color: var(--accent-strong); }
+@keyframes pagetitle-in { from { opacity: 0; translate: 0 4px; } }
+@media (prefers-reduced-motion: reduce) { .pagetitle { animation: none; } }
+
+/* search: the "Created" filter under the search box */
+.palette__filter { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-5); border-bottom: 1px solid var(--border); }
+.palette__filterlabel { font-size: var(--text-2xs); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-faint); margin-right: var(--space-1); }
+.palette__filter button.chip { cursor: pointer; }
+.palette__filter button.chip:hover { color: var(--text); border-color: var(--border-strong); }
+.palette__filter .chip[aria-pressed='true'], .palette__date.is-set { background: var(--accent-soft); color: var(--accent-strong); border-color: color-mix(in oklab, var(--accent) 30%, var(--border)); font-weight: 600; }
+.palette__date { font: inherit; font-size: var(--text-xs); color: var(--text-muted); cursor: pointer; }
+
+/* a status written as a sentence: a line of its own under the other chips, wrapped */
+.chip.chip--longstatus { flex-basis: 100%; order: 99; height: auto; padding: 0.3rem 0.75rem; border-radius: var(--radius-md, 10px); white-space: normal; align-items: baseline; line-height: 1.5; }
+.chip--longstatus .dot { flex: none; translate: 0 -0.1em; }
+.chip--longstatus b { font-weight: 500; }
+
+/* task lists: the server emits a plain list with checkboxes, so style it by what it contains */
+.prose ul:has(> li > input[type='checkbox']) { list-style: none; padding-left: 0; }
+/* The box sits in the item's left padding and the text flows normally beside it. Not flex: that turned every bold run,
+   code span and text run of an item into its own narrow column. */
+.prose li:has(> input[type='checkbox']) { position: relative; padding-left: 1.65em; }
+.prose li > input[type='checkbox'] { appearance: none; position: absolute; left: 0; top: calc(0.5lh - 0.525em); margin: 0; width: 1.05em; height: 1.05em; border: 1.5px solid var(--border-strong); border-radius: 5px; background: var(--surface); display: grid; place-items: center; }
+.prose li > input[type='checkbox']:checked { background: var(--accent); border-color: var(--accent); }
+.prose li > input[type='checkbox']:checked::after { content: ''; width: 0.28em; height: 0.52em; border: solid var(--accent-contrast); border-width: 0 2px 2px 0; rotate: 45deg; translate: 0 -0.05em; }
+.prose li:has(> input:checked) { color: var(--text-muted); }
+
+/* links the renderer classified */
+.prose a.broken { color: var(--c-danger); text-decoration: line-through; text-decoration-color: color-mix(in oklab, var(--c-danger) 60%, transparent); cursor: help; }
+.prose a.link-file { color: var(--text-muted); text-decoration: none; border-bottom: 1px dotted var(--text-faint); cursor: help; }
+.prose a.external::after { content: '↗'; font-size: 0.75em; margin-left: 0.15em; color: var(--text-faint); }
+.image-omitted { padding: 0.05em 0.4em; border: 1px dashed var(--border-strong); border-radius: 6px; color: var(--text-muted); font-size: 0.9em; }
+.image-omitted::before { content: '▣ '; color: var(--text-faint); }
+
+/* code blocks: the copy button is added by the app */
+.code__bar .copy { margin-left: auto; }
+.prose .code pre code { background: none; border: 0; padding: 0; }
+
+/* Mermaid diagrams: a placeholder until the library has drawn them */
+.prose pre.mermaid { display: none; }
+.prose .diagram { position: relative; }
+.prose .diagram__body svg { min-width: 0; max-width: 100%; height: auto; }
+.diagram__error { padding: var(--space-4); border: 1px solid color-mix(in oklab, var(--c-danger) 40%, var(--border)); border-radius: var(--radius-md); background: color-mix(in oklab, var(--c-danger) 6%, var(--surface)); font-size: 0.9em; }
+.diagram__error pre { margin: var(--space-2) 0 0; overflow-x: auto; font: 450 0.8rem/1.6 var(--font-mono); }
+.diagram__loading { color: var(--text-faint); font-size: var(--text-sm); padding: var(--space-6); text-align: center; }
+
+/* footnotes and small text in prose */
+.prose .footnotes { margin-top: 3em; font-size: 0.875em; color: var(--text-muted); }
+.prose .footnotes hr { margin-block: 1em; }
+.prose sup { line-height: 0; }
+.prose :target { animation: flash 1.6s var(--ease); }
+@keyframes flash { from { background: var(--accent-soft); } }
+
+/* states */
+.state { max-width: 34rem; margin: 18vh auto 0; padding: 0 var(--space-6); text-align: center; color: var(--text-muted); }
+.state h1 { margin: 0 0 var(--space-2); font-size: 1.4rem; color: var(--text); letter-spacing: -0.02em; }
+.state .btn { margin-top: var(--space-4); }
+.skeleton { height: 1em; border-radius: 6px; background: linear-gradient(90deg, var(--surface-2), var(--surface-3), var(--surface-2)); background-size: 200% 100%; animation: shimmer 1.4s linear infinite; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+/* folder listing */
+.folder h1 { margin: 0 0 var(--space-1); font-size: 1.9rem; letter-spacing: -0.028em; }
+.folder .sub { margin: 0 0 var(--space-6); color: var(--text-muted); }
+.folder .recent .t small { display: block; font-weight: 400; color: var(--text-faint); font-size: var(--text-xs); }
+
+/* the in-page rail footer and misc */
+.rail__empty { padding: var(--space-4) var(--space-3); color: var(--text-faint); font-size: var(--text-sm); }
+.menu-list { display: grid; gap: 2px; }
+.menu-item { display: flex; align-items: center; gap: var(--space-3); width: 100%; padding: 0.5rem var(--space-3); border: 0; border-radius: var(--radius-md); background: transparent; text-align: left; color: var(--text); }
+.menu-item:hover, .menu-item[aria-current='true'] { background: var(--surface-2); }
+.menu-item .n { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
+.menu-item .muted { font-size: var(--text-xs); color: var(--text-faint); }
+.menu-sep { height: 1px; margin: var(--space-1) 0; background: var(--border); }
+.libswitch__mark--sm { width: 1.7rem; height: 1.7rem; font-size: 0.7rem; border-radius: 8px; }
+.card .remove { position: absolute; top: var(--space-2); right: var(--space-2); opacity: 0; transition: opacity var(--dur-1); }
+.card:hover .remove, .card:focus-within .remove { opacity: 1; }
+.libcard { position: relative; }
+.pill-error { color: var(--c-danger); }
+@media (hover: none) { .card .remove { opacity: 1; } }
+
+/* print: headings the author marked, and parts the reader chose to leave out */
+@media print {
+  .print-hidden, [data-no-print] { display: none !important; }
+  .print-include { display: revert !important; }
+}
+
+/* tables: let columns keep their natural width instead of collapsing to one character; the table scrolls sideways when it must */
+.prose .table th, .prose .table td { overflow-wrap: break-word; word-break: normal; }
+.prose .table td:first-child { min-width: 2.2em; }
+
+/* diagrams drawn in the dark theme are inverted for paper, so a dark-mode print is still readable */
+@media print { figure.diagram[data-theme='dark'] .diagram__body svg { filter: invert(0.92) hue-rotate(180deg); } }
+
+/* copy-section button after a heading: shown on hover or keyboard focus */
+.prose button.section-copy { display: inline-block; width: 1em; height: 1em; margin-left: 0.4em; padding: 0; vertical-align: middle; border: 0; background: none; cursor: pointer; color: var(--text-faint); opacity: 0; transition: opacity var(--dur-1), color var(--dur-1); }
+.prose button.section-copy svg { width: 100%; height: 100%; }
+.prose :is(h2, h3, h4):hover > button.section-copy, .prose button.section-copy:focus-visible { opacity: 1; }
+.prose button.section-copy:hover { color: var(--accent-strong); }
+@media print { .prose button.section-copy { display: none !important; } }
+
+/* note IDs written in text, linked by the profile (DOC-0007) */
+.prose a.note-ref { white-space: nowrap; font-family: var(--font-mono); font-size: 0.86em; font-weight: 500; text-decoration: none; padding: 0.05em 0.35em; border-radius: 5px; background: var(--accent-softer); border: 1px solid color-mix(in oklab, var(--accent) 18%, var(--border)); }
+.prose a.note-ref:hover { background: var(--accent-soft); }
+a.chip { text-decoration: none; }
+a.chip:hover { background: var(--surface-2); color: var(--text); }
+
+/* the page container takes focus (not shown) when "Back to top" is used, so the keyboard continues from the top */
+.main:focus { outline: none; }
+
+/* page-tree filter */
+.treefilter { display: flex; align-items: center; gap: var(--space-1); margin: 0 var(--space-1) var(--space-2); padding: 0 var(--space-1) 0 var(--space-2); height: 2rem; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface-2); color: var(--text-faint); }
+.treefilter:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.treefilter input { flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; background: transparent; color: var(--text); font: inherit; font-size: var(--text-sm); }
+.treefilter__count { margin: 0 var(--space-2) var(--space-2); font-size: var(--text-xs); color: var(--text-muted); }
+.tree mark { background: var(--accent-soft); color: inherit; border-radius: 3px; padding: 0 1px; font-weight: 650; }
+.tree .count.mono { font-family: var(--font-mono); letter-spacing: -0.02em; }
+
+/* the draggable right edge of the page-tree column (hidden when the column is a drawer on a phone) */
+.rail__resize { position: absolute; top: 0; right: -4px; bottom: 0; width: 9px; cursor: col-resize; z-index: 5; touch-action: none; }
+.rail__resize::after { content: ""; position: absolute; top: 0; bottom: 0; left: 4px; width: 2px; background: transparent; transition: background var(--dur-1); }
+.rail__resize:hover::after, .rail__resize:focus-visible::after, .rail__resize.is-dragging::after { background: var(--accent); }
+.rail__resize:focus-visible { outline: none; }
+body:has(.rail__resize.is-dragging) { user-select: none; cursor: col-resize; }
+@media (max-width: 860px) { .rail__resize { display: none; } }
+
+/* a long page title is cut in the middle: the start can shrink with an ellipsis, the last word or two always show */
+.tree .label--cut { display: flex; overflow: hidden; text-overflow: clip; }
+.tree .label--cut .head { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: pre; }
+.tree .label--cut .tail { flex: none; white-space: pre; }
+
+/* while filtering there are only a few rows, so titles wrap and show in full instead of being cut */
+.tree.is-filtering a { align-items: flex-start; padding-block: 0.35rem; }
+.tree.is-filtering .label--cut { display: block; white-space: normal; overflow: visible; overflow-wrap: anywhere; }
+.tree.is-filtering .label--cut .head, .tree.is-filtering .label--cut .tail { display: inline; white-space: normal; overflow: visible; }
+.tree.is-filtering a .icon { margin-top: 0.2rem; flex: none; }
+.tree.is-filtering .count.mono { margin-top: 0.2rem; }
+
+/* a page with a table wider than the text: the table gets the width of the page (all of it when the contents list is hidden); the text keeps its comfortable width */
+.reader.reader--wide { max-width: 100rem; }
+.reader.reader--wide.reader--notoc { grid-template-columns: minmax(0, 1fr); } /* with the contents list hidden, the table may use that column too */
+.reader--wide > article { max-width: none; }
+.reader--wide > article > :not(.prose), .reader--wide .prose > :not(.tablebox--wide) { max-width: var(--reading-w); }
