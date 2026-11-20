@@ -1,0 +1,100 @@
+# Checks every push to main and every pull request: the Go tests on Linux and Windows, the web interface's type check and unit tests,
+# and that the built interface committed in internal/ui/dist (which `go install` relies on) matches its sources.
+# The browser tests (make e2e) are not run here: their screenshots depend on the machine; run them locally before a release.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  go:
+    name: Go (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - name: Vet
+        run: go vet -composites=false ./...
+      - name: Test (with the race detector)
+        if: runner.os == 'Linux'
+        run: go test -race ./...
+      - name: Test
+        if: runner.os == 'Windows'
+        run: go test ./...
+      - name: Build
+        run: go build -o bin/ ./cmd/docent
+      - name: Start it and ask for a page (Linux)
+        if: runner.os == 'Linux'
+        env:
+          DOCENT_HOME: ${{ runner.temp }}/docent
+        run: |
+          bin/docent add testdata/fixtures/basic --name basic
+          bin/docent serve --no-open --addr 127.0.0.1:8787 &
+          for i in $(seq 1 40); do curl -sf http://127.0.0.1:8787/_api/health && break; sleep 0.25; done
+          curl -sf "http://127.0.0.1:8787/_api/page?src=basic&path=guide/getting-started.md" | grep -q '"title"'
+          curl -sf http://127.0.0.1:8787/ | grep -q '<title>Docent</title>'
+      - name: Start it and ask for a page (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        env:
+          DOCENT_HOME: ${{ runner.temp }}\docent
+        run: |
+          .\bin\docent.exe add testdata\fixtures\basic --name basic
+          $server = Start-Process -FilePath .\bin\docent.exe -ArgumentList 'serve','--no-open','--addr','127.0.0.1:8787' -PassThru -NoNewWindow
+          $up = $false
+          foreach ($i in 1..40) { try { Invoke-RestMethod http://127.0.0.1:8787/_api/health | Out-Null; $up = $true; break } catch { Start-Sleep -Milliseconds 250 } }
+          if (-not $up) { throw 'docent did not start' }
+          $page = Invoke-RestMethod 'http://127.0.0.1:8787/_api/page?src=basic&path=guide/getting-started.md'
+          if (-not $page.title) { throw 'no page' }
+          if (-not $page.file.Contains('\')) { throw "the file path is not a Windows path: $($page.file)" }
+          $html = (Invoke-WebRequest http://127.0.0.1:8787/ -UseBasicParsing).Content
+          if (-not $html.Contains('<title>Docent</title>')) { throw 'no app page' }
+          Stop-Process -Id $server.Id
+
+  web:
+    name: Web interface
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 11.21.0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - name: Type check
+        run: pnpm check
+      - name: Unit tests
+        run: pnpm test
+      - name: Build
+        run: pnpm build
+      - name: The committed interface matches its sources
+        working-directory: .
+        run: |
+          git add -N internal/ui/dist licenses
+          if ! git diff --exit-code --stat -- internal/ui/dist licenses; then
+            echo "::error::internal/ui/dist or licenses/ is out of date: run 'make web' and commit the result"
+            exit 1
+          fi

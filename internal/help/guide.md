@@ -13,7 +13,7 @@ docent open ~/Downloads/readme.md   # look at any folder or file once, without r
 In the app, **Open folder or file** (bottom of the left column) lets you pick a folder with a file browser, then asks whether to just open it or add it to your libraries.
 A folder you add is called a *library*. Remove one from the home page; this only forgets it, your files stay.
 
-Docent runs as one small program: no database, no account, no internet needed. It listens on your own computer only. Closing the browser tab does not stop it; press Ctrl+C in the terminal, or see *Run it in the background* below.
+Docent runs as one small program: no database, no account, no internet needed. It listens on your own computer only. Closing the browser tab does not stop it; press Ctrl+C in the terminal (on Windows, close the console window that opened with it), or see *Run it in the background* below.
 
 ## Reading
 
@@ -78,7 +78,8 @@ what is open, so use it only on a network you trust.
 
 ## Run it in the background
 
-If you want Docent ready at all times, `packaging/docent.service` is a ready-made systemd user service (instructions are at the top of the file).
+If you want Docent ready at all times on Linux, `packaging/docent.service` is a ready-made systemd user service (instructions are at the top of the file).
+On Windows, put a shortcut to `docent.exe` in your Startup folder (press `Win+R`, type `shell:startup`).
 Otherwise just run `docent` when you want it; it starts in about a tenth of a second.
 
 ## If something is not right
@@ -91,7 +92,8 @@ Otherwise just run `docent` when you want it; it starts in about a tenth of a se
 | The page looks stale | Reload once; if a folder is on a network drive, changes may not be announced by the system (reload the page). |
 | Diagrams show "could not be drawn" | The message names the problem in the diagram source. `docent check <library> --diagrams` finds every such diagram. |
 
-Your settings and the list of libraries live in `~/.config/docent/`; the search cache in `~/.cache/docent/`. Delete them to start fresh.
+Your settings and the list of libraries live in `~/.config/docent/` (on Windows `%AppData%\docent`); the search cache in `~/.cache/docent/`
+(on Windows `%LocalAppData%\docent`). Delete them to start fresh.
 
 ## For teams that keep developer notes
 

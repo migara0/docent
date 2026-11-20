@@ -84,7 +84,7 @@ func linkGraph(notes []BundleNote, prefix string) map[string]map[string]bool {
 	idRe := regexp.MustCompile(`\b(` + regexp.QuoteMeta(prefix) + `-\d{4,})\b`)
 	graph := map[string]map[string]bool{}
 	for _, n := range notes {
-		data, _ := os.ReadFile(n.Abs)
+		data, _ := ReadNote(n.Abs)
 		text := proseOf(string(data))
 		targets := map[string]bool{}
 		for _, m := range idRe.FindAllStringSubmatch(text, -1) {
@@ -212,7 +212,7 @@ func contains(list []string, s string) bool {
 
 // convert gives a note's body as Markdown for the bundle: no front matter or title, headings one level down, links between bundled notes as anchors.
 func convert(n BundleNote, ids map[string]string, omit []string, keepOmitted bool) string {
-	data, _ := os.ReadFile(n.Abs)
+	data, _ := ReadNote(n.Abs)
 	text := frontRe.ReplaceAllString(string(data), "")
 	if !keepOmitted {
 		text = noPrintDiv.ReplaceAllString(text, "")

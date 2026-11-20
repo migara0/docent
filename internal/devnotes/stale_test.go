@@ -10,8 +10,17 @@ import (
 	"github.com/migara0/docent/internal/library"
 )
 
+// needGit skips a test that runs git when it is not installed (for example the Windows tests run under Wine).
+func needGit(t *testing.T) {
+	t.Helper()
+	if _, err := exec.LookPath("git"); err != nil {
+		t.Skip("git is not installed")
+	}
+}
+
 func git(t *testing.T, dir, date string, args ...string) {
 	t.Helper()
+	needGit(t)
 	cmd := exec.Command("git", append([]string{"-C", dir, "-c", "user.name=T", "-c", "user.email=t@t"}, args...)...)
 	cmd.Env = append(os.Environ(), "GIT_AUTHOR_DATE="+date, "GIT_COMMITTER_DATE="+date)
 	if out, err := cmd.CombinedOutput(); err != nil {

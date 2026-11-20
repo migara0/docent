@@ -1,0 +1,8 @@
+# Keep \n line endings in every checkout, Windows included: golden files, fixtures and tests compare text byte for byte.
+# (Docent itself reads notes with either ending; see internal/devnotes/eol.go.)
+* text=auto eol=lf
+
+*.png binary
+*.woff2 binary
+*.gz binary
+*.zip binary

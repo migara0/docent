@@ -38,7 +38,7 @@ type Scaffold struct {
 // templateFor returns the template of a type: the library's own folder wins over the built-in one.
 func (sc Scaffold) templateFor(typ string) (string, error) {
 	if sc.S.Templates != "" {
-		if data, err := os.ReadFile(filepath.Join(sc.S.Templates, typ+".md")); err == nil {
+		if data, err := ReadNote(filepath.Join(sc.S.Templates, typ+".md")); err == nil {
 			return string(data), nil
 		}
 	}
@@ -192,7 +192,7 @@ func (sc Scaffold) Create(n NewNote) (rel, id string, err error) {
 
 // InsertID writes `id: X` into a note's front matter, right after its title line (or at the top of the front matter).
 func InsertID(path, id string) error {
-	data, err := os.ReadFile(path)
+	data, crlf, err := readNoteEOL(path)
 	if err != nil {
 		return err
 	}
@@ -210,5 +210,5 @@ func InsertID(path, id string) error {
 		}
 	}
 	lines = slices.Insert(lines, at, "id: "+id)
-	return os.WriteFile(path, []byte(strings.Join(lines, "\n")), 0o644)
+	return os.WriteFile(path, withEOL([]byte(strings.Join(lines, "\n")), crlf), 0o644)
 }

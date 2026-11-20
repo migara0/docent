@@ -235,6 +235,7 @@ func (p *PlanDoc) View(updated string, today time.Time) *PlanView {
 
 // splitFrontMatter returns the lines of the front matter (without the --- lines) and the rest of the file. ok is false when there is none.
 func splitFrontMatter(data []byte) (fm []string, rest string, ok bool) {
+	data, _ = toLF(data) // the page view passes the file as it is on disk, which may have Windows line endings
 	text := string(data)
 	nl := "\n"
 	lines := strings.Split(text, nl)
@@ -453,7 +454,7 @@ func setTopKey(fm []string, key string, lines []string) []string {
 
 // SavePlan writes the plan into the note: only status, now, next, stages, waiting and updated change; the rest of the file is kept as it is.
 func SavePlan(path string, p *PlanDoc, today time.Time) error {
-	data, err := os.ReadFile(path)
+	data, crlf, err := readNoteEOL(path)
 	if err != nil {
 		return err
 	}
@@ -477,7 +478,7 @@ func SavePlan(path string, p *PlanDoc, today time.Time) error {
 	b.WriteString(strings.Join(fm, "\n"))
 	b.WriteString("\n---\n")
 	b.WriteString(rest)
-	return writeAtomic(path, b.Bytes())
+	return writeAtomic(path, withEOL(b.Bytes(), crlf))
 }
 
 func orDefault(s, d string) string {
@@ -517,7 +518,7 @@ func writeAtomic(path string, data []byte) error {
 func Edit(path string, today time.Time, fn func(*PlanDoc) error) (*PlanDoc, error) {
 	planMu.Lock()
 	defer planMu.Unlock()
-	data, err := os.ReadFile(path)
+	data, err := ReadNote(path)
 	if err != nil {
 		return nil, err
 	}
@@ -851,7 +852,7 @@ func (p *PlanDoc) SetStatus(status string) error {
 // ───────── checks and notices ─────────
 
 func planProblems(s Settings, rel string) []string {
-	data, err := os.ReadFile(filepath.Join(s.Root, filepath.FromSlash(rel)))
+	data, err := ReadNote(filepath.Join(s.Root, filepath.FromSlash(rel)))
 	if err != nil {
 		return nil
 	}
@@ -869,7 +870,7 @@ const (
 )
 
 func planNotices(s Settings, rel string, pg *library.Page) []library.Notice {
-	data, err := os.ReadFile(filepath.Join(s.Root, filepath.FromSlash(rel)))
+	data, err := ReadNote(filepath.Join(s.Root, filepath.FromSlash(rel)))
 	if err != nil {
 		return nil
 	}
@@ -927,7 +928,7 @@ func (s Settings) FindPlan(ref string) (string, error) {
 	var matches []string
 	if want, ok := NormalizeID(ref, s.Prefix); ok {
 		for _, p := range all {
-			if data, err := os.ReadFile(p); err == nil {
+			if data, err := ReadNote(p); err == nil {
 				if fm, _, ok := splitFrontMatter(data); ok && slices.ContainsFunc(fm, func(l string) bool { return strings.TrimSpace(l) == "id: "+want }) {
 					matches = append(matches, p)
 				}

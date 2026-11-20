@@ -27,7 +27,7 @@ install: build
 licenses:
 	./scripts/go-licenses.sh
 
-# Linux release archives and checksums in dist/ (the UI is built once; Go cross-compiles).
+# Release archives and checksums in dist/: Linux (.tar.gz) and Windows (.zip), amd64 and arm64. The UI is built once; Go cross-compiles.
 release: web licenses
 	rm -rf dist && mkdir -p dist
 	for arch in amd64 arm64; do \
@@ -36,7 +36,13 @@ release: web licenses
 	  cp README.md LICENSE NOTICE.md CHANGELOG.md VERSION $$d/; cp -r licenses $$d/; cp internal/help/guide.md $$d/GUIDE.md; cp -r packaging $$d/; cp -r docs $$d/docs; \
 	  tar -C dist -czf $$d.tar.gz docent-$(VERSION)-linux-$$arch; rm -rf $$d; \
 	done
-	cd dist && sha256sum *.tar.gz > SHA256SUMS && cat SHA256SUMS
+	for arch in amd64 arm64; do \
+	  d=dist/docent-$(VERSION)-windows-$$arch; mkdir -p $$d; \
+	  CGO_ENABLED=0 GOOS=windows GOARCH=$$arch go build -trimpath -ldflags "-s -w -X main.version=$(VERSION)" -o $$d/docent.exe ./cmd/docent; \
+	  cp README.md LICENSE NOTICE.md CHANGELOG.md VERSION $$d/; cp -r licenses $$d/; cp internal/help/guide.md $$d/GUIDE.md; cp -r docs $$d/docs; \
+	  (cd dist && zip -qr -X docent-$(VERSION)-windows-$$arch.zip docent-$(VERSION)-windows-$$arch); rm -rf $$d; \
+	done
+	cd dist && sha256sum *.tar.gz *.zip > SHA256SUMS && cat SHA256SUMS
 
 e2e: build
 	cd web && pnpm exec playwright test

@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"runtime"
 	"slices"
 	"strings"
 	"sync"
@@ -39,7 +40,7 @@ func (s *Server) browse(w http.ResponseWriter, r *http.Request) error {
 	switch {
 	case dir == "" || dir == "~":
 		dir = home
-	case strings.HasPrefix(dir, "~/"):
+	case strings.HasPrefix(dir, "~/") || strings.HasPrefix(dir, `~\`):
 		dir = filepath.Join(home, dir[2:])
 	}
 	if !filepath.IsAbs(dir) {
@@ -102,13 +103,32 @@ func (s *Server) browse(w http.ResponseWriter, r *http.Request) error {
 		name := filepath.Base(p)
 		if p == home {
 			name = "Home"
+		} else if v := filepath.VolumeName(p); v != "" && filepath.Dir(p) == p {
+			name = v // a drive: "C:", not the "\" filepath.Base gives
 		}
 		crumbs = append([]fsCrumb{{Name: name, Path: p}}, crumbs...)
 		if filepath.Dir(p) == p || p == home {
 			break
 		}
 	}
-	return ok(w, map[string]any{"dir": dir, "parent": filepath.Dir(dir), "crumbs": crumbs, "entries": nonNil(entries), "home": home})
+	var roots []string
+	if runtime.GOOS == "windows" {
+		roots = windowsDrives()
+	}
+	return ok(w, map[string]any{"dir": dir, "parent": filepath.Dir(dir), "crumbs": crumbs, "entries": nonNil(entries), "home": home,
+		"sep": string(filepath.Separator), "roots": append([]string{}, roots...)})
+}
+
+// windowsDrives lists the drives that exist ("C:\", "D:\" ...), so the picker can switch between them.
+func windowsDrives() []string {
+	var out []string
+	for c := 'A'; c <= 'Z'; c++ {
+		root := string(c) + `:\`
+		if _, err := os.Stat(root); err == nil {
+			out = append(out, root)
+		}
+	}
+	return out
 }
 
 func nonNil(e []fsEntry) []fsEntry {

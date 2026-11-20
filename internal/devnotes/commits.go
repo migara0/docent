@@ -371,7 +371,7 @@ func (c Commits) Upsert(path string, spec CommitSpec) (int, error) {
 		return 0, err
 	}
 	block := render(spec, commits, time.Now().Format("2006-01-02"))
-	data, err := os.ReadFile(path)
+	data, crlf, err := readNoteEOL(path)
 	if err != nil {
 		return 0, err
 	}
@@ -391,12 +391,12 @@ func (c Commits) Upsert(path string, spec CommitSpec) (int, error) {
 		}
 		text = strings.TrimRight(text, " \n\t") + "\n\n### " + spec.Repo + "\n\n" + block + "\n"
 	}
-	return len(commits), os.WriteFile(path, []byte(text), 0o644)
+	return len(commits), os.WriteFile(path, withEOL([]byte(text), crlf), 0o644)
 }
 
 // Refresh re-reads every recorded repo of a note from git (a note marked status: released is skipped).
 func (c Commits) Refresh(path, onlyRepo string) ([]string, error) {
-	data, err := os.ReadFile(path)
+	data, err := ReadNote(path)
 	if err != nil {
 		return nil, err
 	}
@@ -434,7 +434,7 @@ func (c Commits) Plan(notes []string) (string, []string, error) {
 		if err != nil {
 			return "", nil, err
 		}
-		data, _ := os.ReadFile(path)
+		data, _ := ReadNote(path)
 		if FrontMatterValue(string(data), "status") == "released" {
 			warnings = append(warnings, fmt.Sprintf("# warning: %s is already released", filepath.Base(path)))
 		}
@@ -476,7 +476,7 @@ func (c Commits) Plan(notes []string) (string, []string, error) {
 
 // ListLine describes a commits note for `docent commits list`.
 func (c Commits) ListLine(path string) string {
-	data, _ := os.ReadFile(path)
+	data, _ := ReadNote(path)
 	text := string(data)
 	var counts []string
 	for _, b := range Blocks(text) {

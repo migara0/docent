@@ -8,6 +8,7 @@ Out of scope for v1, by decision:
 - **Editing.** v1 reads; "open in your editor" is provided. A built-in editor (CodeMirror, later a friendlier editor for non-developers) comes after v1.
 - **Git integration and access control.** On hold at the owner's request. The server has one request hook where a check can be added later; the default is loopback only.
 - **Platforms other than Linux.** The code avoids Linux-only assumptions (paths, file watching) so macOS and Windows are a later build-and-test task, not a rewrite.
+  Windows was added on 2026-11-20 (see 0011); macOS is still open.
 - **Licence and publication.** Decided on 2026-11-20: MIT, published on GitHub (`github.com/migara0/docent`), first public release 0.10.0-beta.1.
   Third-party licences are collected in `licenses/` (see `NOTICE.md`).
 

@@ -31,6 +31,7 @@ func commitRepo(t *testing.T) (Commits, string, string) {
 
 func gitOut(t *testing.T, dir string, args ...string) string {
 	t.Helper()
+	needGit(t)
 	out, err := exec_git(dir, args...)
 	if err != nil {
 		t.Fatalf("git %v: %v", args, err)
