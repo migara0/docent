@@ -140,7 +140,7 @@ func runServe(o serveOptions, open []string) error {
 			fmt.Printf("  http://%s:%s\n", ip, port)
 		}
 	}
-	fmt.Println("Press Ctrl+C to stop.")
+	fmt.Println(stopHint())
 	if !o.noOpen {
 		target := url
 		if first != nil {

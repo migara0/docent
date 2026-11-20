@@ -3,7 +3,7 @@
 A fast, local reader for folders of Markdown. Point it at a folder (or a single file) and it shows everything as a clean, searchable, linked
 documentation site in your browser. No build step, no config, no front matter required. Folders you register are remembered for the next run.
 
-> **Status: beta (0.10.0-beta.2), Linux and Windows.** It is used every day on real notes collections, but it is new in public:
+> **Status: beta (0.10.0-beta.3), Linux and Windows.** It is used every day on real notes collections, but it is new in public:
 > expect rough edges, and please [open an issue](https://github.com/migara0/docent/issues) when something is wrong.
 >
 > **Not there yet:** images inside Markdown are shown as their alt text, not drawn; Docent reads but does not edit (it opens your editor);
@@ -30,20 +30,20 @@ Download the archive for your machine from the [releases page](https://github.co
 **Linux**
 
 ```bash
-tar xzf docent-0.10.0-beta.2-linux-amd64.tar.gz
-install -Dm755 docent-0.10.0-beta.2-linux-amd64/docent ~/.local/bin/docent
+tar xzf docent-0.10.0-beta.3-linux-amd64.tar.gz
+install -Dm755 docent-0.10.0-beta.3-linux-amd64/docent ~/.local/bin/docent
 ```
 
 Check the download against `SHA256SUMS` from the same release with `sha256sum -c SHA256SUMS --ignore-missing`.
 
 **Windows**
 
-1. Extract `docent-0.10.0-beta.2-windows-amd64.zip` to a folder of your choice, for example `%LOCALAPPDATA%\Programs\Docent`.
-2. In the extracted `docent-0.10.0-beta.2-windows-amd64` folder, double-click `docent.exe`: it opens Docent in your browser. Its console window shows what it is doing; closing that window stops Docent.
+1. Extract `docent-0.10.0-beta.3-windows-amd64.zip` to a folder of your choice, for example `%LOCALAPPDATA%\Programs\Docent`.
+2. In the extracted `docent-0.10.0-beta.3-windows-amd64` folder, double-click `docent.exe`: it opens Docent in your browser. Its console window shows what it is doing; closing that window stops Docent.
    To use the commands below in a terminal, add the folder to your `Path`.
 3. The program is not signed yet, so Windows SmartScreen may say "Windows protected your PC" the first time: choose **More info**, then **Run anyway**.
 
-To check the download, compare `Get-FileHash docent-0.10.0-beta.2-windows-amd64.zip` (PowerShell) with its line in `SHA256SUMS`.
+To check the download, compare `Get-FileHash docent-0.10.0-beta.3-windows-amd64.zip` (PowerShell) with its line in `SHA256SUMS`.
 PDF export and diagram checks use Google Chrome, or Microsoft Edge when Chrome is not installed.
 
 Or build it with Go (1.21 or newer fetches the Go version it needs):

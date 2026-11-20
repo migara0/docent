@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.10.0-beta.3 (2026-11-20)
+
+- **Windows: double-clicking `docent.exe` now starts Docent.** 0.10.0-beta.2 showed "This is a command line tool. You need to open cmd.exe
+  and run it from there." and closed after 5 seconds (a default of the command-line library Docent uses).
+- When started by a double-click, the window says to keep it open while you read (closing it stops Docent), and after an error it waits for
+  Enter instead of closing before the message can be read.
+- The licence list now covers the Windows build too: it adds `mousetrap` (Apache-2.0), which only the Windows program contains.
+
 ## 0.10.0-beta.2 (2026-11-20)
 
 - **Windows**: `docent.exe` for Windows (amd64 and arm64), as a zip. Double-click it to open Docent in your browser. The program is not

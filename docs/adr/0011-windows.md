@@ -19,6 +19,11 @@ build-and-test task. Building for Windows and running the test suite as Windows 
   The program is not code-signed, so SmartScreen warns on first run; signing needs a certificate and is left for later.
 - **Testing.** CI runs vet, the Go tests and a start-up check (start, read a page, load the app) on Linux and Windows for every push to main and every pull request.
   The browser tests stay local (screenshots depend on the machine).
+- **Double-click (added in 0.10.0-beta.3).** Cobra refuses to run a program started from Explorer by default ("This is a command line tool ..."), which made
+  0.10.0-beta.2 close 5 seconds after a double-click; CI could not see it, because it starts the program from a shell. `cmd/docent/explorer_windows.go` turns
+  that off, tells a double-clicked window to stay open while reading, and waits for Enter after an error. Reproduced and checked by starting docent.exe from
+  a stand-in `explorer.exe` (cobra looks at the parent process's name).
+- **Licences per system.** `scripts/go-licenses.sh` lists the modules of the Linux and the Windows build: `mousetrap` is only in the Windows one.
 
 ## Consequences
 Windows users get the same features. Not covered by any test on real Windows yet: file watching while an editor holds a file open, and the desktop launcher
